@@ -78,7 +78,26 @@ export function Block() {
     setBlocks(updatedBlocks);
   };
 
-  const rearrangeBlocks = () => {};
+  const rearrangeBlocks = () => {
+    type Arrangement = {
+      id: number;
+      length: number;
+    }[];
+    const newArrangement: Arrangement = [];
+    blocks.forEach((block) => {
+      if (!block.id) return;
+      const newBlock = newArrangement.find((newBlock) => newBlock.id === block.id);
+      if (newBlock) return newArrangement[newArrangement.indexOf(newBlock)].length++;
+      newArrangement.push({ id: block.id, length: 1 });
+    });
+
+    const updatedBlocks: IBlock[] = [];
+    newArrangement.forEach((newBlock) => {
+      for (let i = 0; i < newBlock.length; i++) updatedBlocks.push(createBlock(newBlock.id));
+    });
+    while (blocks.length > updatedBlocks.length) updatedBlocks.push(createBlock(null));
+    setBlocks(updatedBlocks);
+  };
 
   return (
     <>
