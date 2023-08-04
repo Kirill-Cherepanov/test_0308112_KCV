@@ -22,7 +22,7 @@ const BlockContainer = ({
         ) : (
           <div
             key={block.keyId}
-            className={`grow ${block.id === selectedId ? 'selected' : ''}`}
+            className={`grow ${block.id === selectedId ? 'border-x scale-y-110' : ''}`}
             style={{ backgroundColor: COLORS[block.id % 100] }}
             onClick={() => handleBlockClick(block.id!)}
             onDoubleClick={() => handleBlockDoubleClick(block.id!)}
