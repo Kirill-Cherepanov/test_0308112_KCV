@@ -1,8 +1,14 @@
 import { useState } from 'react';
+import { Modes } from './types';
 
-type BlockInputFormProps = { onSave: (length: number) => unknown };
+type BlockInputFormProps = {
+  onSave: (length: number) => unknown;
+  onSwitch: (mode?: Modes) => unknown;
+  onRearrange?: () => unknown;
+  mode: Modes;
+};
 
-const BlockInputForm = ({ onSave }: BlockInputFormProps) => {
+const BlockInputForm = ({ onSave, onSwitch, onRearrange, mode }: BlockInputFormProps) => {
   const [blockLength, setBlockLength] = useState('');
 
   const handleSave = () => {
@@ -15,6 +21,10 @@ const BlockInputForm = ({ onSave }: BlockInputFormProps) => {
 
   return (
     <div>
+      {onRearrange && <button onClick={() => onRearrange()}>Упорядочить</button>}
+      <button onClick={() => onSwitch()}>
+        {mode === 'standard' ? 'Стандартный' : 'Улучшенный'} режим
+      </button>
       <label>
         <span>Введите длину блока</span>
         <input
