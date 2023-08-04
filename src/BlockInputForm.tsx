@@ -24,7 +24,7 @@ const BlockInputForm = ({ onSave, onSwitch, onRearrange, onReturn, mode }: Block
   return (
     <div className={clsx('form-container w-full', !onReturn && 'justify-center mt-4')}>
       <div>
-        <label>
+        <label className={clsx('block', onReturn ? 'sm:max-w-[15rem]' : 'mt-2 sm:w-96')}>
           <div className="text-xs">Введите длину {onReturn ? 'блока' : 'контейнера'}</div>
           <input
             type="number"
