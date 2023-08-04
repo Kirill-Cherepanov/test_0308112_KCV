@@ -13,7 +13,7 @@ export const BlockSegment: React.FC<BlockSegmentProps> = ({
 }) => {
   return (
     <div
-      className={`grow ${selected ? 'border-x scale-y-110' : ''}`}
+      className={`block-segment ${selected ? 'rounded-xl' : ''}`}
       style={{ backgroundColor: color }}
       onClick={onClick}
       onDoubleClick={onDoubleClick}

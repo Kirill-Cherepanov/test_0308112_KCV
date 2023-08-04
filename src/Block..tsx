@@ -88,6 +88,10 @@ export function Block() {
     setBlocks(updatedBlocks);
   };
 
+  const resetBlocks = () => {
+    setBlocks([]);
+  };
+
   return (
     <>
       {blocks.length ? (
@@ -98,6 +102,7 @@ export function Block() {
             onSwitch={switchMode}
             mode={mode}
             onRearrange={rearrangeBlocks}
+            onReturn={resetBlocks}
           />
         </>
       ) : (

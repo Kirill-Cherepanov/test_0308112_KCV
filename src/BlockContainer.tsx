@@ -24,7 +24,7 @@ const BlockContainer = ({ blocks, setBlocks }: BlockContainerProps) => {
   };
 
   return (
-    <div className="flex h-20 w-full bg-slate-200" ref={element}>
+    <div className="block-container" ref={element}>
       {blocks.map((block) =>
         block.id === null ? (
           <div className="grow" key={block.keyId} />
