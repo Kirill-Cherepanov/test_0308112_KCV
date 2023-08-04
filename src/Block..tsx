@@ -6,24 +6,13 @@ import { createBlock } from './misc';
 
 export function Block() {
   const [blocks, setBlocks] = useState<IBlock[]>([]);
-  const [selectedId, setSelectedId] = useState<number>(-1);
   const [mode, setMode] = useState<Modes>('standard');
 
   const switchMode = (mode?: Modes) => {
     setMode((modeOld) => mode || (modeOld === 'standard' ? 'enhanced' : 'standard'));
   };
 
-  const toggleSelectBlock = (id: number) => {
-    setSelectedId((idOld) => (idOld === id ? -1 : id));
-  };
-
-  const removeBlock = (id: number) => {
-    const updatedBlocks = blocks.map((block) => (block.id === id ? createBlock(null) : block));
-    setBlocks(updatedBlocks);
-    setSelectedId(-1);
-  };
-
-  const checkEnoughSpace = (length: number) => {
+  const checkIsEnoughSpace = (length: number) => {
     const freeSpace = blocks.filter((block) => block.id === null).length;
     return freeSpace >= length;
   };
@@ -67,7 +56,7 @@ export function Block() {
   };
 
   const addBlock = (length: number) => {
-    if (!checkEnoughSpace(length)) return alert('Не хватает места');
+    if (!checkIsEnoughSpace(length)) return alert('Не хватает места');
     if (mode === 'standard' || !fitBlockEnhanced(length)) fitBlockStandard(length);
   };
 
@@ -103,12 +92,7 @@ export function Block() {
     <>
       {blocks.length ? (
         <>
-          <BlockContainer
-            blocks={blocks}
-            handleBlockClick={toggleSelectBlock}
-            handleBlockDoubleClick={removeBlock}
-            selectedId={selectedId}
-          />
+          <BlockContainer blocks={blocks} setBlocks={setBlocks} />
           <BlockInputForm
             onSave={addBlock}
             onSwitch={switchMode}

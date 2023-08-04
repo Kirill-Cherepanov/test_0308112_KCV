@@ -1,19 +1,22 @@
-import { Block } from './types';
-
 interface BlockSegmentProps {
-  block: Block;
+  selected: boolean;
   onClick: () => void;
   onDoubleClick: () => void;
+  color?: string;
 }
 
-const BlockSegment: React.FC<BlockSegmentProps> = ({ block, onClick, onDoubleClick }) => {
+export const BlockSegment: React.FC<BlockSegmentProps> = ({
+  selected,
+  onClick,
+  onDoubleClick,
+  color,
+}) => {
   return (
     <div
-      className={`${block.selected ? 'selected' : ''}`}
+      className={`grow ${selected ? 'border-x scale-y-110' : ''}`}
+      style={{ backgroundColor: color }}
       onClick={onClick}
       onDoubleClick={onDoubleClick}
     />
   );
 };
-
-export default BlockSegment;

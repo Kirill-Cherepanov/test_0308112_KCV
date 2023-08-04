@@ -1,31 +1,40 @@
-import { COLORS } from './misc';
+import { useState } from 'react';
+import { BlockSegment } from './BlockSegment';
+import { COLORS, createBlock } from './misc';
 import { IBlock } from './types';
+import { useOnClickOutside } from './hooks';
 
 type BlockContainerProps = {
   blocks: IBlock[];
-  handleBlockClick: (id: number) => void;
-  handleBlockDoubleClick: (id: number) => void;
-  selectedId: number;
+  setBlocks: React.Dispatch<React.SetStateAction<IBlock[]>>;
 };
 
-const BlockContainer = ({
-  blocks,
-  handleBlockClick,
-  handleBlockDoubleClick,
-  selectedId,
-}: BlockContainerProps) => {
+const BlockContainer = ({ blocks, setBlocks }: BlockContainerProps) => {
+  const [selectedId, setSelectedId] = useState<number>(-1);
+  const element = useOnClickOutside<HTMLDivElement>(() => setSelectedId(-1));
+
+  const toggleSelectBlock = (id: number) => {
+    setSelectedId((idOld) => (idOld === id ? -1 : id));
+  };
+
+  const removeBlock = (id: number) => {
+    const updatedBlocks = blocks.map((block) => (block.id === id ? createBlock(null) : block));
+    setBlocks(updatedBlocks);
+    setSelectedId(-1);
+  };
+
   return (
-    <div className="flex h-20 w-full bg-slate-200">
+    <div className="flex h-20 w-full bg-slate-200" ref={element}>
       {blocks.map((block) =>
         block.id === null ? (
           <div className="grow" key={block.keyId} />
         ) : (
-          <div
+          <BlockSegment
             key={block.keyId}
-            className={`grow ${block.id === selectedId ? 'border-x scale-y-110' : ''}`}
-            style={{ backgroundColor: COLORS[block.id % 100] }}
-            onClick={() => handleBlockClick(block.id!)}
-            onDoubleClick={() => handleBlockDoubleClick(block.id!)}
+            selected={block.id === selectedId}
+            color={COLORS[block.id % 100]}
+            onClick={() => toggleSelectBlock(block.id!)}
+            onDoubleClick={() => removeBlock(block.id!)}
           />
         )
       )}
