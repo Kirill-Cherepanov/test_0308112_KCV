@@ -9,7 +9,8 @@ https://github.com/Kirill-Cherepanov/test_0308112_KCV/assets/52123816/90d04cf1-1
 Решил я задачу на стаке React + Typescript + Tailwind, что может быть перебором для такой простой задачи, но мне просто было так удобнее и я хотел показать свои навыки.
 \
 \
-При создании контейнера мы заполняем массив введенной пустыми сегментами. 
+При создании контейнера мы заполняем массив введенной пустыми сегментами.
+
 ```typescript
 const createBlock = (id: null | number): IBlock => ({ keyId: nanoid(), id });
 const setContainerLength = (length: number) => {
@@ -19,29 +20,35 @@ const setContainerLength = (length: number) => {
   setBlocks(updatedBlocks);
 };
 ```
+
 \
 \
 Из условия задания у нас есть 2 режима установки блоков:
+
 1. Стандартный: Блоки укладываются слева-направо, занимая все существующие пробелы. Т.е. после удаления блока 2, блок 5 длиной 6, ляжет фрагментами.
 2. Улучшенный: При вставке нового блока сначала ищется такое же по размеру место, затем большего размера и если не находится, то уже тогда резать.
+
 ```typescript
 const [mode, setMode] = useState<Modes>('standard');
 const switchMode = (mode?: Modes) => {
   setMode((modeOld) => mode || (modeOld === 'standard' ? 'enhanced' : 'standard'));
 };
 ```
+
 \
 \
 При добавлении блока мы сначала проверяем в каком режиме его нужно добавлять:
+
 ```typescript
 const addBlock = (length: number) => {
   if (!checkIsEnoughSpace(length)) return alert('Не хватает места');
   if (mode === 'standard' || !fitBlockEnhanced(length)) fitBlockStandard(length);
 };
 ```
+
 \
 \
-Функции `fitBlockEnhanced` и `fitBlockStandard` соответсвенно отвечают за установку блоков в разных режимах. Если установлен улучшенный режим, то мы сначала проверяем наличие пустых мест, которые могут вместить добавляемый блок полностью без разбиений и если таких мест нет, то мы вмещаем с помощью `fitBlockStandard`.  
+Функции `fitBlockEnhanced` и `fitBlockStandard` соответсвенно отвечают за установку блоков в разных режимах. Если установлен улучшенный режим, то мы сначала проверяем наличие пустых мест, которые идеально вмещали бы добавляемый блок, затем ищем места, которые вмещали бы блок полностью без разбиений и если таких мест нет, то мы вмещаем с помощью стандартного метода `fitBlockStandard`.
 
 ```typescript
 const fitBlockStandard = (length: number) => {
@@ -56,31 +63,40 @@ const fitBlockStandard = (length: number) => {
 };
 
 const fitBlockEnhanced = (length: number) => {
-  let currSpace = 0;
+  const updateBlocks = (firstIndex: number, lastIndex: number) => {
+    const nextId = findNextId();
+    const updatedBlocks = blocks.map((block, i) => {
+      if (i < firstIndex || i > lastIndex) return block;
+      return createBlock(nextId);
+    });
+    setBlocks(updatedBlocks);
+  };
 
+  let currSpace = 0;
+  for (let i = 0; i < blocks.length; i++) {
+    if (!blocks[i].id) currSpace++;
+    else currSpace = 0;
+    if (currSpace !== length || !blocks[i + 1]?.id) continue;
+    updateBlocks(i - length + 1, i);
+    return true;
+  }
+
+  currSpace = 0;
   for (let i = 0; i < blocks.length; i++) {
     if (!blocks[i].id) currSpace++;
     else currSpace = 0;
     if (currSpace !== length) continue;
-
-    const firstIndex = i - length + 1;
-    const nextId = findNextId();
-
-    const updatedBlocks = blocks.map((block, j) => {
-      if (j < firstIndex || j > i) return block;
-      return createBlock(nextId);
-    });
-    setBlocks(updatedBlocks);
-
+    updateBlocks(i - length + 1, i);
     return true;
   }
 
   return false;
 };
 ```
+
 \
 \
-Функция упорядовачивания `rearrangeBlocks` проходит по всем сегментам контейнера и задает им порядок в зависимости от их расположения. То есть если каким-то образом получился такой порядок блоков: 
+Функция упорядовачивания `rearrangeBlocks` проходит по всем сегментам контейнера и задает им порядок в зависимости от их расположения. То есть если каким-то образом получился такой порядок блоков:
 
 [1][3][2][3]
 
@@ -110,6 +126,7 @@ const rearrangeBlocks = () => {
   setBlocks(updatedBlocks);
 };
 ```
+
 \
 \
 Другие функции особо не требующие пояснения:
@@ -130,8 +147,8 @@ const resetBlocks = () => {
 };
 ```
 
-
 ## Локальная установка и запуск
+
 ```bash
 yarn install
 yarn dev

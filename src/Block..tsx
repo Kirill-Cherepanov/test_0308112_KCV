@@ -33,22 +33,30 @@ export function Block() {
   };
 
   const fitBlockEnhanced = (length: number) => {
-    let currSpace = 0;
+    const updateBlocks = (firstIndex: number, lastIndex: number) => {
+      const nextId = findNextId();
+      const updatedBlocks = blocks.map((block, i) => {
+        if (i < firstIndex || i > lastIndex) return block;
+        return createBlock(nextId);
+      });
+      setBlocks(updatedBlocks);
+    };
 
+    let currSpace = 0;
+    for (let i = 0; i < blocks.length; i++) {
+      if (!blocks[i].id) currSpace++;
+      else currSpace = 0;
+      if (currSpace !== length || !blocks[i + 1]?.id) continue;
+      updateBlocks(i - length + 1, i);
+      return true;
+    }
+
+    currSpace = 0;
     for (let i = 0; i < blocks.length; i++) {
       if (!blocks[i].id) currSpace++;
       else currSpace = 0;
       if (currSpace !== length) continue;
-
-      const firstIndex = i - length + 1;
-      const nextId = findNextId();
-
-      const updatedBlocks = blocks.map((block, j) => {
-        if (j < firstIndex || j > i) return block;
-        return createBlock(nextId);
-      });
-      setBlocks(updatedBlocks);
-
+      updateBlocks(i - length + 1, i);
       return true;
     }
 
