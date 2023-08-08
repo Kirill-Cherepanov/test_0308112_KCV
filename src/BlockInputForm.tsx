@@ -22,7 +22,13 @@ const BlockInputForm = ({ onSave, onSwitch, onRearrange, onReturn, mode }: Block
   };
 
   return (
-    <div className={clsx('form-container w-full', !onReturn && 'justify-center mt-4')}>
+    <form
+      className={clsx('form-container w-full', !onReturn && 'justify-center mt-4')}
+      onSubmit={(e) => {
+        handleSave();
+        e.preventDefault();
+      }}
+    >
       <div>
         <label className={clsx('block', onReturn ? 'sm:max-w-[15rem]' : 'mt-2 sm:w-96')}>
           <div className="text-xs">Введите длину {onReturn ? 'блока' : 'контейнера'}</div>
@@ -34,7 +40,7 @@ const BlockInputForm = ({ onSave, onSwitch, onRearrange, onReturn, mode }: Block
             className="form-input"
           />
         </label>
-        <button className="black-btn w-full" onClick={handleSave}>
+        <button className="black-btn w-full" type="submit">
           {onReturn ? 'Добавить' : 'Сохранить'}
         </button>
       </div>
@@ -51,7 +57,7 @@ const BlockInputForm = ({ onSave, onSwitch, onRearrange, onReturn, mode }: Block
           </button>
         </div>
       )}
-    </div>
+    </form>
   );
 };
 
